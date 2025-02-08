@@ -1,7 +1,7 @@
 import { artifacts, ethers, run } from "hardhat";
-import { StarWarsCharacterListInstance } from "../typechain-types";
+import { CarbonCreditInstance } from "../typechain-types";
 
-const StarWarsCharacterList = artifacts.require("StarWarsCharacterList");
+const CarbonCredit = artifacts.require("CarbonCredit");
 const FDCHub = artifacts.require(
   "@flarenetwork/flare-periphery-contracts/coston/IFdcHub.sol:IFdcHub"
 );
@@ -20,28 +20,27 @@ const {
   JQ_API_KEY,
   VERIFIER_URL_TESTNET,
   VERIFIER_PUBLIC_API_KEY_TESTNET,
-  DA_LAYER_URL_COSTON,
+  DA_LAYER_URL_COSTON2,
 } = process.env;
 
 const TX_ID =
-  "0xae295f8075754f795142e3238afa132cd32930f871d21ccede22bbe80ae31f73";
+  "0x465fef418efc6af7993de440f506ffc4bf565a185f6eba4bd41999f27e4f9acb";
 
-// const STAR_WARS_LIST_ADDRESS = "0xD7e76b28152aADC59D8C857a1645Ea1552F7f7fB"; // coston
-const STAR_WARS_LIST_ADDRESS = "0x531B6E1e924aa8b431D1cacF517468DF2c3faa4F"; // coston2
+const CARBON_CREDIT_ADDRESS = "0x8Ee9F7dF514c4EB564834b946d0A8a4D457953b8"; // coston2
 
 async function deployMainList() {
-  const list: StarWarsCharacterListInstance = await StarWarsCharacterList.new();
+  const credit: CarbonCreditInstance = await CarbonCredit.new();
 
-  console.log("Char list deployed at:", list.address);
+  console.log("Credit contract deployed at:", credit.address);
   // verify
   const result = await run("verify:verify", {
-    address: list.address,
-    constructorArguments: [],
+    address: credit.address,
   });
+  console.log(result);
 }
 
 // deployMainList().then((data) => {
-//     process.exit(0);
+//   process.exit(0);
 // });
 
 async function prepareRequest() {
@@ -53,21 +52,17 @@ async function prepareRequest() {
     requestBody: {
       url: "https://swapi.dev/api/people/3/",
       postprocessJq: `{
-                name: .name,
-                height: .height,
-                mass: .mass,
-                numberOfFilms: .films | length,
-                uid: (.url | split("/") | .[-2] | tonumber)
-            }`,
+        name: .name,
+        height: .height,
+        mass: .mass
+      }`,
       abi_signature: `
-            {\"components\": [
-                {\"internalType\": \"string\",\"name\": \"name\",\"type\": \"string\"},
-                {\"internalType\": \"uint256\",\"name\": \"height\",\"type\": \"uint256\"},
-                {\"internalType\": \"uint256\",\"name\": \"mass\",\"type\": \"uint256\"},
-                {\"internalType\": \"uint256\",\"name\": \"numberOfFilms\",\"type\": \"uint256\"},
-                {\"internalType\": \"uint256\",\"name\": \"uid\",\"type\": \"uint256\"}
-            ],
-            \"name\": \"task\",\"type\": \"tuple\"}`,
+        {\"components\": [
+            {\"internalType\": \"string\",\"name\": \"name\",\"type\": \"string\"},
+            {\"internalType\": \"uint256\",\"name\": \"height\",\"type\": \"uint256\"},
+            {\"internalType\": \"uint256\",\"name\": \"mass\",\"type\": \"uint256\"}
+        ],
+      \"name\": \"task\",\"type\": \"tuple\"}`,
     },
   };
 
@@ -88,8 +83,8 @@ async function prepareRequest() {
 }
 
 // prepareRequest().then((data) => {
-//     console.log("Prepared request:", data);
-//     process.exit(0);
+//   console.log("Prepared request:", data);
+//   process.exit(0);
 // });
 
 const firstVotingRoundStartTs = 1658429955;
@@ -98,10 +93,11 @@ const votingEpochDurationSeconds = 90;
 async function submitRequest() {
   const requestData = await prepareRequest();
 
-  const starWarsList: StarWarsCharacterListInstance =
-    await StarWarsCharacterList.at(STAR_WARS_LIST_ADDRESS);
+  const creditContract: CarbonCreditInstance = await CarbonCredit.at(
+    CARBON_CREDIT_ADDRESS
+  );
 
-  const fdcHUB = await FDCHub.at(await starWarsList.getFdcHub());
+  const fdcHUB = await FDCHub.at(await creditContract.getFdcHub());
 
   // Call to the FDC Hub protocol to provide attestation.
   const tx = await fdcHUB.requestAttestation(requestData.abiEncodedRequest, {
@@ -124,16 +120,16 @@ async function submitRequest() {
 }
 
 // submitRequest().then((data) => {
-//     console.log("Submitted request:", data);
-//     process.exit(0);
+//   console.log("Submitted request:", data);
+//   process.exit(0);
 // });
 
-const TARGET_ROUND_ID = 894447; // 0
+const TARGET_ROUND_ID = 895595; // 0
 
 async function getProof(roundId: number) {
   const request = await prepareRequest();
   const proofAndData = await fetch(
-    `${DA_LAYER_URL_COSTON}fdc/get-proof-round-id-bytes`,
+    `${DA_LAYER_URL_COSTON2}fdc/get-proof-round-id-bytes`,
     {
       method: "POST",
       headers: {
@@ -151,25 +147,30 @@ async function getProof(roundId: number) {
 }
 
 // getProof(TARGET_ROUND_ID)
-//     .then((data) => {
-//         console.log("Proof and data:");
-//         console.log(JSON.stringify(data, undefined, 2));
-//     })
-//     .catch((e) => {
-//         console.error(e);
-//     });
+//   .then((data) => {
+//     console.log("Proof and data:");
+//     console.log(JSON.stringify(data, undefined, 2));
+//   })
+//   .catch((e) => {
+//     console.error(e);
+//   });
 
 async function submitProof() {
   const dataAndProof = await getProof(TARGET_ROUND_ID);
   console.log(dataAndProof);
-  const starWarsList = await StarWarsCharacterList.at(STAR_WARS_LIST_ADDRESS);
+  const creditContract: CarbonCreditInstance = await CarbonCredit.at(
+    CARBON_CREDIT_ADDRESS
+  );
 
-  const tx = await starWarsList.addCharacter({
-    merkleProof: dataAndProof.proof,
-    data: dataAndProof.response,
-  });
+  const tx = await creditContract.addCredit(
+    {
+      merkleProof: dataAndProof.proof,
+      data: dataAndProof.response,
+    },
+    5
+  );
   console.log(tx.tx);
-  console.log(await starWarsList.getAllCharacters());
+  console.log(await creditContract.getAllCredits());
 }
 
 submitProof()

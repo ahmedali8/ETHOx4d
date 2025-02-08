@@ -1,0 +1,20 @@
+[
+  {
+    "country": "Finland",
+    "country_code": "FI",
+    "ETS_information": "2.1 EU-ETS Verified Emission",
+    "main_activity_sector_name": "43 Production of hydrogen and synthesis gas",
+    "unit": "tonne of CO2 equ.",
+    "value": 0,
+    "year": 2013
+  },
+  {
+    "country": "Finland",
+    "country_code": "FI",
+    "ETS_information": "2.1 EU-ETS Verified Emission",
+    "main_activity_sector_name": "43 Production of hydrogen and synthesis gas",
+    "unit": "tonne of CO2 equ.",
+    "value": 0,
+    "year": 2014
+  }
+]

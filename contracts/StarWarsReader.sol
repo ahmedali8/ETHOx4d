@@ -31,6 +31,13 @@ contract StarWarsCharacterList {
     mapping(uint256 => StarWarsCharacter) public characters;
     uint256[] public characterIds;
 
+
+function isJsonApiProofValid(
+        DataTransportObject calldata _proof
+    ) public view returns (bool) {
+        
+    }
+
     function isJsonApiProofValid(
         IJsonApi.Proof calldata _proof
     ) public view returns (bool) {
