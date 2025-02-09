@@ -1,79 +1,66 @@
-## If you are from the eth-global/encode hackathon https://github.com/flare-foundation/flare-hardhat-starter/tree/encode-hackathon is the branch you look for
+# Carbon DApp
 
-## Flare Hardhat Starter Kit
+## Introduction
 
-**IMPORTANT!!**
-The supporting library uses Openzeppelin version `4.9.3`, be careful to use the documentation and examples from that library version.
+Carbon DApp is a decentralized application (DApp) designed to mint, trade, and redeem carbon offsets on-chain. By leveraging blockchain technology, it ensures transparency, prevents double spending, and enhances the efficiency of the voluntary carbon market.
 
-### Getting started
+More on the technical side is in [GUIDE.md](./GUIDE.md)
 
-If you are new to Hardhat please check the [Hardhat getting started doc](https://hardhat.org/hardhat-runner/docs/getting-started#overview)
+## What is a Carbon Offset?
 
-1. Clone and install dependencies:
+A carbon offset represents a reduction in carbon emissions, often in the form of a certificate detailing the amount of CO2 removed or reduced.
 
-   ```console
-   git clone https://github.com/flare-foundation/flare-hardhat-starter.git
-   cd flare-hardhat-starter
-   ```
+### Example:
 
-   and then run:
+**Eco-Farms** plants 10,000 trees, offsetting emissions by 10 tons. The project registers with a carbon registry and receives a certificate. **McDonald’s** purchases the certificate, claiming to offset 10 tons of CO2.
 
-   ```console
-   yarn
-   ```
+## Issues with the Current System
 
-   or
+### Lack of Transparency
 
-   ```console
-   npm install
-   ```
+Credits are traded over-the-counter with no public data on price and quality, making verification difficult.
 
-2. Set up `.env` file
+### Double Spending
 
-   ```console
-   mv .env.example .env
-   ```
+Firms can register with multiple credit registries and receive duplicate certificates, allowing the same credit to be sold multiple times.
 
-3. Change the `PRIVATE_KEY` in the `.env` file to yours
+### Fragmentation
 
-4. Compile the project
+Carbon credits issued in one jurisdiction are often ineligible for tax breaks or regulatory benefits in another jurisdiction.
 
-    ```console
-    yarn hardhat compile
-    ```
+## Carbon DApp: The Solution
 
-    or
+Carbon DApp addresses these issues by:
 
-    ```console
-    npx hardhat compile
-    ```
+- Representing carbon offsets as **ERC-1155** tokens.
+- Linking regulatory disclosures and public reports via **Flare** to ensure authenticity.
+- Allowing users to mint, trade, and redeem carbon offsets transparently on-chain.
 
-    This will compile all `.sol` files in your `/contracts` folder. It will also generate artifacts that will be needed for testing. Contracts `Imports.sol` import MockContracts and Flare related mocks, thus enabling mocking of the contracts from typescript.
+## ERC-1155 Token Structure
 
-5. Run Tests
+- **Public Data**: Includes regulatory, registry data, and project documents.
+- **Flare Oracle Contract**: Links real-world data to on-chain assets.
+- **ERC-1155 Token Contract**: Facilitates minting, trading, and redemption of tokenized offsets.
 
-    ```console
-    yarn hardhat test
-    ```
+## Comparison: Tokenized Offsets vs. Traditional Systems
 
-    or
+| Feature                  | Carbon DApp                      | Existing Systems              |
+| ------------------------ | -------------------------------- | ----------------------------- |
+| **Market Structure**     | Transparent, global market       | Fragmented intermediaries     |
+| **Asset Representation** | Singular token per offset        | Potential duplication         |
+| **Verification**         | Public, immutable disclosures    | Limited transparency          |
+| **Integration**          | Seamless with compliance markets | Poor regulatory compatibility |
 
-    ```console
-    npx hardhat test
-    ```
+## Implementation Strategy
 
-6. Deploy
+### Capital Markets
 
-    Check the `hardhat.config.ts` file, where you define which networks you want to interact with. Flare mainnet & test network details are already added in that file.
+Carbon DApp is the **first full-fledged public capital market** for climate initiatives.
 
-    Make sure that you have added API Keys in the `.env` file
+### Carbon Registries
 
-   ```console
-   npx hardhat run scripts/tryDeployment.ts
-   ```
+Newly registered projects are tokenized and integrated with existing registries like **Verra** and **Gold Standard**.
 
-## Resources
+### UN Agencies
 
-- [Flare Developer Hub](https://dev.flare.network/)
-- [Hardhat Docs](https://hardhat.org/docs)
-
+The platform aligns with **UNCTAD, UNFCCC, UNDP**, and other agencies to establish digital standards for on-chain carbon credit trading.
